@@ -77,7 +77,7 @@ def scrape_channel(
     Returns:
         Dictionary with scraping results
     """
-    num_thumbnails = 10
+    num_thumbnails = 5
     try:
         # Extract channel ID if needed
         channel_id = extract_channel_id(channel_name)
