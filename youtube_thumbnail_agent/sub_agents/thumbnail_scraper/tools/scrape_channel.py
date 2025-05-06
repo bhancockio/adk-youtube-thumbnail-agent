@@ -151,8 +151,6 @@ def scrape_channel(
             if i >= num_thumbnails:
                 break
 
-            video_id = item["id"]["videoId"]
-            video_title = item["snippet"]["title"]
             thumbnail_url = item["snippet"]["thumbnails"]["high"]["url"]
 
             # Save the thumbnail

@@ -31,9 +31,8 @@ thumbnail_agent = Agent(
     
     First, ask the user which YouTube channel's thumbnail style they want to clone.
     Collect specific information:
-    - Channel name
-    - Channel URL (if available)
-    - Any specific thumbnail style elements they particularly like from this channel
+    - Channel URL
+    - Any specific thumbnail style elements they particularly like from this channel (Optional)
     
     ## Phase 2: Thumbnail Collection
     

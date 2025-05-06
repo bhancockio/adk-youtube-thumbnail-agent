@@ -19,6 +19,7 @@ def exit_analysis(
         Dictionary with exit status
     """
     try:
+        tool_context.actions.escalate = True
         if tool_context:
             # Check if thumbnail_analysis exists in state
             if "thumbnail_analysis" not in tool_context.state:
@@ -47,15 +48,6 @@ def exit_analysis(
                     "status": "error",
                     "message": f"Cannot exit yet. {len(missing_thumbnails)} thumbnails still need analysis: {', '.join(missing_thumbnails[:3])}{' and more' if len(missing_thumbnails) > 3 else ''}",
                 }
-
-            # All thumbnails have been analyzed, set exit flag
-            tool_context.state["exit_thumbnail_analysis"] = True
-
-            # Create a summary of the analyses for easy access
-            tool_context.state["thumbnail_analysis_summary"] = {
-                "total_thumbnails_analyzed": len(analyzed_thumbnails),
-                "thumbnails": list(analyzed_thumbnails.keys()),
-            }
 
             return {
                 "status": "success",

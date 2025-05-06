@@ -1,4 +1,4 @@
-"""Thumbnail Selector
+"""Thumbnail Selector Agent
 
 This agent selects the next thumbnail to analyze or exits the loop if all thumbnails have been analyzed.
 """
@@ -7,11 +7,10 @@ from google.adk.agents.llm_agent import LlmAgent
 
 from youtube_thumbnail_agent.constants import GEMINI_MODEL
 
-from .tools.exit_analysis import exit_analysis
-from .tools.list_thumbnails import list_thumbnails
-from .tools.select_thumbnail import select_thumbnail
+from ..tools.exit_analysis import exit_analysis
+from ..tools.select_thumbnail import select_thumbnail
 
-thumbnail_selector = LlmAgent(
+thumbnail_selector_agent = LlmAgent(
     name="ThumbnailSelector",
     model=GEMINI_MODEL,
     instruction="""
@@ -20,7 +19,7 @@ thumbnail_selector = LlmAgent(
     # YOUR PROCESS
     
     1. CHECK THE STATE for thumbnails needing analysis:
-       - Look at state["thumbnail_analysis"] - it contains filenames as keys and analysis results as values
+       - Look at thumbnail_analysis - it contains filenames as keys and analysis results as values
        - Any entry with an empty string "" needs to be analyzed
        
     2. SELECT THE NEXT THUMBNAIL:
@@ -44,10 +43,9 @@ thumbnail_selector = LlmAgent(
     Remember that the thumbnail_analysis dictionary is pre-populated with all filenames,
     and your job is to select the next one for analysis or exit when all are done.
     
-    Here is the current state:
+    Here is the current state of the thumbnail analysis:
     {thumbnail_analysis}
     """,
     description="Selects the next thumbnail to analyze or exits the loop when all are analyzed",
-    tools=[list_thumbnails, select_thumbnail, exit_analysis],
-    output_key="selection_result",
+    tools=[select_thumbnail, exit_analysis],
 )

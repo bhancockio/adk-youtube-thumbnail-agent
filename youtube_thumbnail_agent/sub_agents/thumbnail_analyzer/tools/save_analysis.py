@@ -4,28 +4,23 @@ from google.adk.tools.tool_context import ToolContext
 
 
 def save_analysis(
-    tool_context: ToolContext,
     thumbnail_filename: str,
     analysis: str,
+    tool_context: ToolContext,
 ) -> Dict:
     """
     Save the analysis for a specific thumbnail to state.
 
     Args:
-        tool_context: ADK tool context
         thumbnail_filename: The filename of the analyzed thumbnail
         analysis: The detailed analysis text for the thumbnail
+        tool_context: ADK tool context
 
     Returns:
         Dictionary with save status
     """
     try:
-        if not tool_context:
-            return {
-                "status": "error",
-                "message": "Tool context is missing. Cannot save analysis.",
-            }
-
+        print(f"Saving analysis for {thumbnail_filename}")
         if not thumbnail_filename:
             return {"status": "error", "message": "No thumbnail filename provided."}
 

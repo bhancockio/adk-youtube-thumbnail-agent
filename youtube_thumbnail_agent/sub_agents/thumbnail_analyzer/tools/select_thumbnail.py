@@ -18,12 +18,6 @@ def select_thumbnail(
         Dictionary with selection status
     """
     try:
-        if not tool_context:
-            return {
-                "status": "error",
-                "message": "Tool context is missing. Cannot select thumbnail.",
-            }
-
         if not thumbnail_filename:
             return {"status": "error", "message": "No thumbnail filename provided."}
 

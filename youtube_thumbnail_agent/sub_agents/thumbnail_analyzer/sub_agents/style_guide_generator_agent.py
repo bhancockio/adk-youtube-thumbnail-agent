@@ -1,4 +1,4 @@
-"""Style Guide Generator
+"""Style Guide Generator Agent
 
 This agent analyzes all thumbnail analyses to create a comprehensive style guide.
 """
@@ -7,7 +7,7 @@ from google.adk.agents.llm_agent import LlmAgent
 
 from youtube_thumbnail_agent.constants import GEMINI_MODEL
 
-style_guide_generator = LlmAgent(
+style_guide_generator_agent = LlmAgent(
     name="StyleGuideGenerator",
     model=GEMINI_MODEL,
     instruction="""
@@ -17,11 +17,11 @@ style_guide_generator = LlmAgent(
     # YOUR PROCESS
     
     1. VERIFY ALL THUMBNAILS ARE ANALYZED:
-       - Check state["thumbnail_analysis"] to confirm all thumbnails have non-empty analysis entries
+       - Check thumbnail_analysis to confirm all thumbnails have non-empty analysis entries
        - If any entries are empty, you cannot proceed - explain that all thumbnails must be analyzed first
     
     2. ANALYZE ALL THUMBNAIL ANALYSES:
-       - Review all the thumbnail analyses stored in state["thumbnail_analysis"]
+       - Review all the thumbnail analyses stored in thumbnail_analysis
        - Identify common patterns and elements across all thumbnails
        - Look for consistent use of:
          * Colors and color schemes
