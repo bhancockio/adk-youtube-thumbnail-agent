@@ -32,6 +32,7 @@ thumbnail_scraper_agent = LlmAgent(
     - Thumbnails will be saved to a reference_images directory
     - Each thumbnail's filename will be structured as "channel_thumbnail_X.jpg"
     - The tool also initializes the thumbnail_analysis dictionary in state with empty strings for each thumbnail
+    - Once you're done scraping, delegate to the thumbnail_analyzer_agent to start the thumbnail analysis process
     """,
     description="Scrapes thumbnails from YouTube channels for analysis",
     tools=[scrape_channel],

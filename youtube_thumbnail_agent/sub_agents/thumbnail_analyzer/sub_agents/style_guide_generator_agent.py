@@ -52,6 +52,7 @@ style_guide_generator_agent = LlmAgent(
     - Be extremely specific and detailed - this guide will be used to create new thumbnails
     - Focus on actionable guidance that could be used to recreate this style
     - Identify both obvious and subtle patterns across the thumbnails
+    - Once you've generated the style guide, delegate to the prompt_generator_agent to create a prompt for the image generation agent
     
     Remember that your style guide will be the foundation for creating new thumbnails in the 
     same visual style as the analyzed channel.
