@@ -25,6 +25,13 @@ generate_image_agent = Agent(
     3. Save the generated image as an artifact for easy retrieval
     4. Edit images if requested
     
+    ## Special Considerations for Style-Cloned Thumbnails
+    
+    When generating thumbnails based on a cloned channel style:
+    1. Check if there's style information in the prompt about a specific channel's style
+    2. Pay extra attention to maintain the style elements mentioned in the prompt
+    3. Ensure that the generated image balances staying true to the reference style while being unique to the creator's content
+    
     ## Tools Available to You
     
     You have two powerful tools at your disposal:
