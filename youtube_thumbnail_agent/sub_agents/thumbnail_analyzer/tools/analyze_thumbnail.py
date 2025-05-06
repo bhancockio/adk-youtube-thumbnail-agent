@@ -43,21 +43,13 @@ def analyze_thumbnail(
             # If thumbnail isn't in the dictionary, add it
             tool_context.state["thumbnail_analysis"][thumbnail_filename] = ""
 
-        # Read the image file
-        with open(thumbnail_path, "rb") as f:
-            image_data = f.read()
-
-        # Create an artifact with the image data
-        image_artifact = types.Part(
-            inline_data=types.Blob(mime_type="image/jpeg", data=image_data)
-        )
+        tool_context.load_artifact(thumbnail_path)
 
         # Return success with the image artifact
         return {
             "status": "success",
             "message": f"Thumbnail loaded: {thumbnail_filename}",
             "thumbnail": thumbnail_filename,
-            "image": image_artifact,
         }
 
     except Exception as e:

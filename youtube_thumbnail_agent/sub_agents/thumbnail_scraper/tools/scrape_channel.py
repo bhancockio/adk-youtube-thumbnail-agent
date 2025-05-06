@@ -66,7 +66,6 @@ def extract_channel_id(channel_name: str) -> Optional[str]:
 def scrape_channel(
     tool_context: ToolContext,
     channel_name: str,
-    num_thumbnails: int = 5,
 ) -> Dict:
     """
     Scrape thumbnails from a YouTube channel.
@@ -74,11 +73,11 @@ def scrape_channel(
     Args:
         tool_context: ADK tool context
         channel_name: YouTube channel name/ID/handle
-        num_thumbnails: Number of thumbnails to retrieve (default: 5)
 
     Returns:
         Dictionary with scraping results
     """
+    num_thumbnails = 10
     try:
         # Extract channel ID if needed
         channel_id = extract_channel_id(channel_name)

@@ -23,7 +23,6 @@ thumbnail_scraper_agent = LlmAgent(
     
     1. Take the channel URL, handle, or name provided by the user
     2. Use the scrape_channel tool to download thumbnails from this channel
-       - If the user doesn't specify a number, download 5 thumbnails by default
        - If there are API errors, explain clearly what went wrong
     3. Confirm the successful download of thumbnails
     
