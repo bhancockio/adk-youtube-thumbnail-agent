@@ -6,7 +6,7 @@ from google.adk.agents import Agent
 from google.adk.tools.tool_context import ToolContext
 
 from ...constants import GEMINI_MODEL
-from ...shared_lib.callbacks import before_model_callback
+from ...shared_lib.callbacks import before_agent_callback
 from ...shared_lib.image_utils import delete_image, list_images
 
 
@@ -22,7 +22,7 @@ prompt_generator = Agent(
     description="An agent that generates YouTube thumbnail concepts in a phased approach.",
     model=GEMINI_MODEL,
     tools=[save_prompt, list_images, delete_image],
-    before_model_callback=before_model_callback,
+    before_agent_callback=before_agent_callback,
     instruction="""
     You are a YouTube Thumbnail Prompt Generator that works in a phased approach to help
     creators develop effective thumbnail concepts for their videos.

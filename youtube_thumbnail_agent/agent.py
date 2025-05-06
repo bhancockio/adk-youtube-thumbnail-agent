@@ -1,7 +1,7 @@
 from google.adk.agents import Agent
 
 from .constants import GEMINI_MODEL
-from .shared_lib import before_model_callback, delete_image, list_images
+from .shared_lib import before_agent_callback, delete_image, list_images
 from .sub_agents.generate_image_agent.agent import generate_image_agent
 from .sub_agents.prompt_generator.agent import prompt_generator
 
@@ -11,7 +11,7 @@ thumbnail_agent = Agent(
     description="A manager agent that orchestrates the YouTube thumbnail creation process.",
     model=GEMINI_MODEL,
     sub_agents=[prompt_generator, generate_image_agent],
-    before_model_callback=before_model_callback,
+    before_agent_callback=before_agent_callback,
     tools=[list_images, delete_image],
     instruction="""
     # 🚀 YouTube Thumbnail Generator Manager
