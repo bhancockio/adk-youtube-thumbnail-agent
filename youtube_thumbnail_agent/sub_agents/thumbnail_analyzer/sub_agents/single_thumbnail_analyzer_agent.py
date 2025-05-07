@@ -24,21 +24,26 @@ single_thumbnail_analyzer_agent = LlmAgent(
     2. ANALYZE THE THUMBNAIL:
        - Use analyze_thumbnail tool with the filename from thumbnail_to_analyze
        - When you see the image, perform a COMPREHENSIVE VISUAL ANALYSIS of:
-         * Overall composition style and layout (centered, rule of thirds, etc.)
-         * Color scheme and palette (vibrant, muted, high contrast, color combinations)
-         * Typography styles (font sizes, weights, placement, colors)
-         * Use of faces/people (close-up, emotions, expressions, framing)
-         * Visual elements (arrows, circles, highlights, borders, effects)
-         * Background treatment (blurred, solid colors, gradients, patterns)
-         * Emotional tone (exciting, professional, dramatic, shocking)
-         * Thumbnail dimensions and aspect ratio
-         * Text-to-image ratio
-         * Overall branded elements and consistency
+         * Overall composition style and layout (centered, rule of thirds, symmetry, asymmetry, balance)
+         * Color scheme and palette (vibrant, muted, high contrast, color combinations, specific hex codes if possible)
+         * Typography styles (font sizes, weights, placement, colors, specific fonts if identifiable)
+         * Use of faces/people (close-up, emotions, expressions, framing, eye contact, direction of gaze)
+         * Visual elements (arrows, circles, highlights, borders, effects, shadows, reflections)
+         * Background treatment (blurred, solid colors, gradients, patterns, textures, depth, perspective)
+         * Emotional tone (exciting, professional, dramatic, shocking, calm, inviting)
+         * Text-to-image ratio (percentage of text coverage, placement relative to key visual elements)
+         * Overall branded elements and consistency (logos, recurring motifs, signature colors)
+         * Lighting and shadows (direction, intensity, color temperature, highlights)
+         * Interaction between elements (how text interacts with images, layering, overlap)
+         * Any additional graphic elements (icons, logos, watermarks, additional imagery)
+         * Contextual elements (any visible context clues about the video's content or theme)
+         * Any unique or standout features (anything that makes the thumbnail particularly distinctive)
     
     # IMPORTANT RULES
     
     - Process ONLY the thumbnail specified in thumbnail_to_analyze
     - Be extremely thorough in your analysis, capturing all visual design elements
+    - Include maximum detail in your analysis to allow for mental recreation of the thumbnail
     - Return as much information as possible about the thumbnail
     - Do not try to select or analyze other thumbnails - focus only on the one selected
     - Your analysis will be used to create a style guide for new thumbnails

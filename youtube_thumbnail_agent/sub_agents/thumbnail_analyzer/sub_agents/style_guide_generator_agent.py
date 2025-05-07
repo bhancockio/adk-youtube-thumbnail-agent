@@ -16,11 +16,7 @@ style_guide_generator_agent = LlmAgent(
     
     # YOUR PROCESS
     
-    1. VERIFY ALL THUMBNAILS ARE ANALYZED:
-       - Check thumbnail_analysis to confirm all thumbnails have non-empty analysis entries
-       - If any entries are empty, you cannot proceed - explain that all thumbnails must be analyzed first
-    
-    2. ANALYZE ALL THUMBNAIL ANALYSES:
+    1. ANALYZE ALL THUMBNAIL ANALYSES:
        - Review all the thumbnail analyses stored in thumbnail_analysis
        - Identify common patterns and elements across all thumbnails
        - Look for consistent use of:
@@ -29,20 +25,30 @@ style_guide_generator_agent = LlmAgent(
          * Composition and layout principles
          * Visual elements (arrows, borders, effects, etc.)
          * Use of faces/expressions
-         * Background treatments
+         * Background treatments (look for exact colors, gradients, textures, and patterns)
          * Branding elements
     
-    3. CREATE A COMPREHENSIVE STYLE GUIDE:
+    2. CREATE A COMPREHENSIVE STYLE GUIDE:
        - Summarize the channel's consistent thumbnail style
        - Provide detailed guidance on each element:
          * COLOR PALETTE: Primary, secondary, accent colors (with hex codes if possible)
          * TYPOGRAPHY: Font styles, sizes, weights, positioning, colors
          * COMPOSITION: Layout patterns, aspect ratios, focal points
+         * BACKGROUND TREATMENT: Pay special attention to backgrounds with extensive detail:
+           - Exact background colors with hex codes where possible
+           - Gradients (direction, colors, intensity)
+           - Textures and patterns with descriptions of their appearance and opacity
+           - Lighting effects on the background (glows, shadows, etc.)
+           - Vignetting or other edge treatments
+           - Any consistent background elements or treatments
+           - How foreground elements interact with the background
+           - Background variations across different thumbnail types
+           - Examples from specific thumbnails for reference
          * VISUAL ELEMENTS: Common graphic elements and their usage
          * EMOTIONAL TONE: Overall feel and psychological approach
          * TECHNICAL SPECS: Any consistent technical aspects
     
-    4. SAVE YOUR STYLE GUIDE:
+    3. SAVE YOUR STYLE GUIDE:
        - Your complete style guide will be automatically saved to state after your response
        - Make sure it's thorough and detailed enough to guide the creation of new thumbnails
     
@@ -52,7 +58,9 @@ style_guide_generator_agent = LlmAgent(
     - Be extremely specific and detailed - this guide will be used to create new thumbnails
     - Focus on actionable guidance that could be used to recreate this style
     - Identify both obvious and subtle patterns across the thumbnails
-    - Once you've generated the style guide, delegate to the prompt_generator_agent to create a prompt for the image generation agent
+    - BACKGROUND DETAILS ARE CRITICAL - provide exhaustive details on background treatment as this is crucial for accurate style reproduction
+    - Include example references from specific thumbnails for all key elements, especially backgrounds
+    - Once you've generated the style guide, ask if they are ready to proceed with the image generation agent
     
     Remember that your style guide will be the foundation for creating new thumbnails in the 
     same visual style as the analyzed channel.

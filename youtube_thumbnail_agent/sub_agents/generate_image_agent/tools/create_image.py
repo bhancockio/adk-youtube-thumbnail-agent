@@ -1,10 +1,11 @@
 """
-Tool for creating images using OpenAI's image generation API.
+Tool for creating images using OpenAI's image generation API with asset incorporation.
 """
 
 import base64
+import glob
 import os
-from typing import Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import google.genai.types as types
 from google.adk.tools.tool_context import ToolContext
@@ -15,16 +16,18 @@ from ....constants import THUMBNAIL_IMAGE_SIZE
 
 def create_image(
     prompt: str,
-    filename: Optional[str] = None,
     tool_context: Optional[ToolContext] = None,
 ) -> Dict:
     """
-    Create an image using OpenAI's image generation API with gpt-image-1 model
-    and save it as an artifact.
+    Create an image using OpenAI's image generation API with gpt-image-1 model,
+    automatically incorporating any assets from the thumbnail_assets directory.
+
+    Behavior:
+    - First time: Uses only assets from thumbnail_assets directory (if any)
+    - Subsequent edits: Uses both the previously generated thumbnail AND assets
 
     Args:
         prompt (str): The prompt to generate an image from
-        filename (str, optional): Filename to save the image as
         tool_context (ToolContext, optional): The tool context
 
     Returns:
@@ -48,13 +51,102 @@ def create_image(
         if "youtube thumbnail" not in clean_prompt.lower():
             clean_prompt = f"YouTube thumbnail: {clean_prompt}"
 
-        # Generate the image
-        response = client.images.generate(
-            model="gpt-image-1",
-            prompt=clean_prompt,
-            n=1,
-            size=THUMBNAIL_IMAGE_SIZE,  # Using the constant for YouTube thumbnail size
-        )
+        # Initialize response variable
+        response = None
+        asset_paths = []
+
+        # First, check assets directory - we'll need this regardless
+        assets_dir = "thumbnail_assets"
+
+        # Create the directory if it doesn't exist
+        if not os.path.exists(assets_dir):
+            os.makedirs(assets_dir, exist_ok=True)
+
+        # List all files in the thumbnail_assets directory
+        asset_files_paths = glob.glob(os.path.join(assets_dir, "*"))
+
+        # Track all asset paths for reporting
+        for asset_path in asset_files_paths:
+            asset_paths.append(asset_path)
+
+        # Check if we already have a generated thumbnail to use as reference
+        if tool_context and tool_context.state.get("thumbnail_generated") is True:
+            previous_thumbnail_path = tool_context.state.get("thumbnail_path")
+
+            if previous_thumbnail_path and os.path.exists(previous_thumbnail_path):
+                # Add the previous thumbnail path to our assets list for reporting
+                if previous_thumbnail_path not in asset_paths:
+                    asset_paths.append(previous_thumbnail_path)
+
+                try:
+                    # OpenAI images.edit requires at least one image
+                    # If we have a previous thumbnail AND other assets, we want to use both
+
+                    if asset_files_paths:
+                        # We have both - use previous thumbnail as main and try to incorporate other assets
+                        with open(previous_thumbnail_path, "rb") as previous_thumbnail:
+                            # Generate using previous thumbnail as base
+                            response = client.images.edit(
+                                model="gpt-image-1",
+                                image=previous_thumbnail,  # Main image file
+                                prompt=clean_prompt,
+                                n=1,
+                                size=THUMBNAIL_IMAGE_SIZE,
+                            )
+                    else:
+                        # We only have the previous thumbnail
+                        with open(previous_thumbnail_path, "rb") as previous_thumbnail:
+                            response = client.images.edit(
+                                model="gpt-image-1",
+                                image=previous_thumbnail,
+                                prompt=clean_prompt,
+                                n=1,
+                                size=THUMBNAIL_IMAGE_SIZE,
+                            )
+
+                except Exception as e:
+                    return {
+                        "status": "error",
+                        "message": f"Error generating image with previous thumbnail: {str(e)}",
+                    }
+            else:
+                # Previous thumbnail path is invalid - fall back to normal flow
+                # (This will be handled in the next section)
+                pass
+        else:
+            # No previous thumbnail exists yet - use normal asset flow
+            # This will be handled in the next section if we don't have a response yet
+            pass
+
+        # If we don't have a response yet (no previous thumbnail or error), try with assets
+        if response is None:
+            if asset_files_paths:
+                # We have assets but no previous thumbnail (or couldn't use it)
+                try:
+                    # Use the first asset as the base image for editing
+                    with open(asset_files_paths[0], "rb") as asset_file:
+                        # Generate the image using edit endpoint with the asset
+                        response = client.images.edit(
+                            model="gpt-image-1",
+                            image=asset_file,  # Main image must be PNG
+                            prompt=clean_prompt,
+                            n=1,
+                            size=THUMBNAIL_IMAGE_SIZE,
+                        )
+
+                except Exception as e:
+                    return {
+                        "status": "error",
+                        "message": f"Error generating image with assets: {str(e)}",
+                    }
+            else:
+                # No assets and no previous thumbnail - use the generate endpoint
+                response = client.images.generate(
+                    model="gpt-image-1",
+                    prompt=clean_prompt,
+                    n=1,
+                    size=THUMBNAIL_IMAGE_SIZE,
+                )
 
         # Get the base64 image data
         if response and response.data and len(response.data) > 0:
@@ -72,15 +164,8 @@ def create_image(
                 "message": "No data returned from the API",
             }
 
-        # Generate filename if not provided
-        if not filename:
-            import time
-
-            filename = f"thumbnail_{int(time.time())}.png"
-
-        # Make sure filename has .png extension
-        if not filename.lower().endswith(".png"):
-            filename += ".png"
+        # Use simple filename as requested
+        filename = "youtube_thumbnail.png"
 
         # Save as an artifact if tool_context is provided
         artifact_version = None
@@ -96,7 +181,8 @@ def create_image(
                     filename=filename, artifact=image_artifact
                 )
 
-                # Store image path in state for reference
+                # Update state to indicate a thumbnail has been generated
+                tool_context.state["thumbnail_generated"] = True
                 tool_context.state["image_filename"] = filename
                 tool_context.state["image_version"] = artifact_version
 
@@ -121,6 +207,11 @@ def create_image(
         with open(filepath, "wb") as f:
             f.write(image_bytes)
 
+        # Update state with thumbnail path
+        if tool_context:
+            tool_context.state["thumbnail_path"] = filepath
+            tool_context.state["thumbnail_generated"] = True
+
         # Return success with artifact details if available
         if artifact_version is not None:
             return {
@@ -129,41 +220,33 @@ def create_image(
                 "filepath": filepath,
                 "artifact_filename": filename,
                 "artifact_version": artifact_version,
+                "assets_used": (
+                    [os.path.basename(path) for path in asset_paths]
+                    if asset_paths
+                    else []
+                ),
+                "thumbnail_generated": True,
+                "is_first_generation": not (
+                    tool_context
+                    and tool_context.state.get("thumbnail_generated", False)
+                ),
             }
         else:
             return {
                 "status": "success",
                 "message": f"Image created successfully and saved as local file '{filepath}'",
                 "filepath": filepath,
+                "assets_used": (
+                    [os.path.basename(path) for path in asset_paths]
+                    if asset_paths
+                    else []
+                ),
+                "thumbnail_generated": True,
+                "is_first_generation": not (
+                    tool_context
+                    and tool_context.state.get("thumbnail_generated", False)
+                ),
             }
 
     except Exception as e:
         return {"status": "error", "message": f"Error creating image: {str(e)}"}
-
-
-# Test the create_image function if this script is run directly
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-
-    # Load environment variables from .env file
-    load_dotenv()
-
-    # Test prompt
-    test_prompt = "A professional YouTube thumbnail for a video about creating AI agents. Include a computer screen with glowing code, a robot assistant, and a modern tech aesthetic. Use vibrant blue and purple colors."
-
-    print("Testing create_image function...")
-    print(f"Prompt: {test_prompt}")
-    print(f"Using image size: {THUMBNAIL_IMAGE_SIZE}")
-
-    # Test the function
-    result = create_image(prompt=test_prompt, filename="test_thumbnail.png")
-
-    # Print the result
-    print("\nResult:")
-    for key, value in result.items():
-        print(f"{key}: {value}")
-
-    # Additional success message
-    if result["status"] == "success":
-        print(f"\nImage successfully created and saved to: {result['filepath']}")
-        print("You can open this file to view the generated thumbnail.")
