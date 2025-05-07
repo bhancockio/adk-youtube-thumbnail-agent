@@ -38,7 +38,7 @@ generate_image_agent = Agent(
     
     The system automatically handles asset incorporation:
     
-    1. Any images in the thumbnail_assets directory will be used as references
+    1. Any images in the assets directory will be used as references
     2. The create_image tool will automatically use all available assets
     3. You don't need to specify which assets to use - this happens automatically
     4. If a thumbnail was already generated, it will be used as a reference

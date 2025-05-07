@@ -7,18 +7,19 @@ import requests
 from dotenv import load_dotenv
 from google.adk.tools.tool_context import ToolContext
 
+from ....constants import IMAGE_ROOT_DIR, REFERENCE_IMAGES_DIR
+
 # Load environment variables
 load_dotenv()
 
 
 def ensure_reference_images_dir():
     """Ensure the reference_images directory exists."""
-    ref_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
-        "reference_images",
-    )
-    os.makedirs(ref_dir, exist_ok=True)
-    return ref_dir
+    # Create the root images directory if it doesn't exist
+    os.makedirs(IMAGE_ROOT_DIR, exist_ok=True)
+    # Create the reference_images directory
+    os.makedirs(REFERENCE_IMAGES_DIR, exist_ok=True)
+    return REFERENCE_IMAGES_DIR
 
 
 def download_thumbnail(url: str, save_path: str, index: int) -> Optional[str]:

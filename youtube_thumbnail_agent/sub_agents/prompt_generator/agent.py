@@ -47,7 +47,7 @@ prompt_generator = Agent(
     - ALWAYS include user-provided images in the final thumbnail - these are not optional reference materials
     - EXPLICITLY STATE that user photos must be used AS-IS with no reinterpretation, ensuring the person looks exactly like the provided image
     
-    User-uploaded images are saved to a thumbnail_assets directory for use by the image generation agent.
+    User-uploaded images are saved to the assets directory for use by the image generation agent.
     The image generation agent will automatically access these images from this directory.
     
     IMPORTANT: You must use ALL user-provided images in the final thumbnail. For example, if the user uploads a 

@@ -11,7 +11,12 @@ import google.genai.types as types
 from google.adk.tools.tool_context import ToolContext
 from openai import OpenAI
 
-from ....constants import THUMBNAIL_IMAGE_SIZE
+from ....constants import (
+    GENERATED_THUMBNAILS_DIR,
+    IMAGE_ROOT_DIR,
+    THUMBNAIL_ASSETS_DIR,
+    THUMBNAIL_IMAGE_SIZE,
+)
 
 
 def create_image(
@@ -20,10 +25,10 @@ def create_image(
 ) -> Dict:
     """
     Create an image using OpenAI's image generation API with gpt-image-1 model,
-    automatically incorporating any assets from the thumbnail_assets directory.
+    automatically incorporating any assets from the assets directory.
 
     Behavior:
-    - First time: Uses only assets from thumbnail_assets directory (if any)
+    - First time: Uses only assets from assets directory (if any)
     - Subsequent edits: Uses both the previously generated thumbnail AND assets
 
     Args:
@@ -55,14 +60,17 @@ def create_image(
         response = None
         asset_paths = []
 
+        # Ensure root images directory exists
+        os.makedirs(IMAGE_ROOT_DIR, exist_ok=True)
+
         # First, check assets directory - we'll need this regardless
-        assets_dir = "thumbnail_assets"
+        assets_dir = THUMBNAIL_ASSETS_DIR
 
         # Create the directory if it doesn't exist
         if not os.path.exists(assets_dir):
             os.makedirs(assets_dir, exist_ok=True)
 
-        # List all files in the thumbnail_assets directory
+        # List all files in the assets directory
         asset_files_paths = glob.glob(os.path.join(assets_dir, "*"))
 
         # Track all asset paths for reporting
@@ -233,11 +241,11 @@ def create_image(
                     "message": f"Image generated but encountered an error saving as artifact: {str(e)}",
                 }
 
-        # Create directory for local file saving (as a backup/for testing)
-        os.makedirs("generated_thumbnails", exist_ok=True)
+        # Create directory for local file saving
+        os.makedirs(GENERATED_THUMBNAILS_DIR, exist_ok=True)
 
         # Save the image locally as well
-        filepath = os.path.join("generated_thumbnails", filename)
+        filepath = os.path.join(GENERATED_THUMBNAILS_DIR, filename)
         with open(filepath, "wb") as f:
             f.write(image_bytes)
 

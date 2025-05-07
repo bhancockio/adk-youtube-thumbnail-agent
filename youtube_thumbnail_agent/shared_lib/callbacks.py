@@ -1,28 +1,28 @@
+import base64
 import os
-from typing import Optional
+from typing import Dict, Optional
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models import LlmRequest, LlmResponse
 
+from ..constants import IMAGE_ROOT_DIR, THUMBNAIL_ASSETS_DIR
+
 
 def ensure_thumbnail_assets_directory_exists():
     """
-    Ensure that the thumbnail_assets directory exists, creating it if necessary.
+    Ensure that the assets directory exists, creating it if necessary.
 
     Returns:
-        str: Path to the thumbnail_assets directory
+        str: Path to the assets directory
     """
-    # Get the absolute path to the repository root
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.abspath(os.path.join(current_dir, "../.."))
+    # Create the root images directory first
+    os.makedirs(IMAGE_ROOT_DIR, exist_ok=True)
 
-    # Create the images directory path
-    assets_dir = os.path.join(repo_root, "thumbnail_assets")
-
-    # Create the directory if it doesn't exist
+    # Create assets directory
+    assets_dir = THUMBNAIL_ASSETS_DIR
     if not os.path.exists(assets_dir):
         os.makedirs(assets_dir)
-        print(f"Created thumbnail_assets directory at {assets_dir}")
+        print(f"Created assets directory at {assets_dir}")
 
     return assets_dir
 
@@ -32,7 +32,7 @@ def before_model_callback(
 ) -> Optional[LlmResponse]:
     """
     Callback that executes before the model is called.
-    Detects and saves inline images from user messages to thumbnail_assets folder
+    Detects and saves inline images from user messages to assets folder
     for use by the generate_image_agent.
 
     Args:
@@ -46,7 +46,7 @@ def before_model_callback(
     invocation_id = callback_context.invocation_id
     print(f"[Image Callback] Processing for agent: {agent_name} (Inv: {invocation_id})")
 
-    # Ensure thumbnail_assets directory exists
+    # Ensure assets directory exists
     assets_dir = ensure_thumbnail_assets_directory_exists()
 
     # Get the last user message parts

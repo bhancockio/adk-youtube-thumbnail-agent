@@ -5,6 +5,8 @@ from typing import Dict
 import google.genai.types as types
 from google.adk.tools.tool_context import ToolContext
 
+from ....constants import REFERENCE_IMAGES_DIR
+
 
 def analyze_thumbnail(
     tool_context: ToolContext,
@@ -21,14 +23,8 @@ def analyze_thumbnail(
         Dictionary with the thumbnail image as an artifact
     """
     try:
-        # Find the reference_images directory
-        base_dir = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        )
-        ref_dir = os.path.join(base_dir, "reference_images")
-
         # Verify the thumbnail exists
-        thumbnail_path = os.path.join(ref_dir, thumbnail_filename)
+        thumbnail_path = os.path.join(REFERENCE_IMAGES_DIR, thumbnail_filename)
         if not os.path.exists(thumbnail_path):
             return {
                 "status": "error",
