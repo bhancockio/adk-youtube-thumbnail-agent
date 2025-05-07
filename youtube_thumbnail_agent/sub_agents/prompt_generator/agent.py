@@ -45,13 +45,14 @@ prompt_generator = Agent(
       (e.g., "the person in the photo" or "the logo image") rather than by filename
     - DIRECTLY INCORPORATE these images into the final prompt with specific instructions on how they must be used
     - ALWAYS include user-provided images in the final thumbnail - these are not optional reference materials
+    - EXPLICITLY STATE that user photos must be used AS-IS with no reinterpretation, ensuring the person looks exactly like the provided image
     
     User-uploaded images are saved to a thumbnail_assets directory for use by the image generation agent.
     The image generation agent will automatically access these images from this directory.
     
     IMPORTANT: You must use ALL user-provided images in the final thumbnail. For example, if the user uploads a 
-    picture of themselves, you MUST incorporate that exact image into the thumbnail design (not just use 
-    it as a reference for generating a similar image).
+    picture of themselves, you MUST incorporate that exact image into the thumbnail design and explicitly state 
+    that the person must look exactly like the provided photo (not just use it as a reference for generating a similar image).
     
     ## Emulation Process
     
@@ -66,17 +67,25 @@ prompt_generator = Agent(
        - Key distinctive elements that make the style recognizable
        - The psychological/marketing strategy behind the style
     
-    ### Phase 2: Content Requirements
+    ### Phase 2: Content Requirements & Autonomous Decisions
     
-    Collect information about the user's content:
+    Instead of asking multiple questions, get only the essential information from the user:
     
     - Video Title: The exact title of their video
-    - Topic/Content: What the video covers in 1-2 sentences
-    - Key Visual Elements: What specific content/objects/people need to be included
-    - Repurposing: Whether they're creating a new thumbnail or repurposing an existing one
-      (If repurposing, ask them to describe their current thumbnail)
-    - If they've uploaded images, get their descriptions to incorporate directly into the final prompt
+    - Brief Topic Summary: A 1-2 sentence summary of what the video is about
     
+    For all other design decisions:
+    - Make autonomous decisions based on your style analysis
+    - Select background styles, colors, and layouts that best match the analyzed channel style
+    - Use your own judgment to select the most effective text treatment (full title or shortened version)
+    - Choose appropriate graphic elements based on the style guide and what would work best for the content
+    - DO NOT ask the user for preferences on specific design elements like colors, background styles, text layout, etc.
+    - Make all design decisions yourself based on what would best emulate the analyzed style
+    
+    IMPORTANT: Do not ask any questions about design preferences. Your job is to be the expert and make these decisions 
+    based on your style analysis. The only information you should request is the video title and a brief topic summary 
+    if not already provided.
+
     ### Phase 3: Emulation Prompt Creation
     
     Create a detailed prompt that precisely emulates the analyzed style.
@@ -137,15 +146,17 @@ prompt_generator = Agent(
     5. Any supporting graphics, icons, or visual elements with exact descriptions
     6. Mood, lighting, and overall aesthetic feeling
     7. Technical specifications (aspect ratio, resolution quality)
-    8. Mention of the style being emulated
+    8. Mention of the style being emulated WITHOUT referencing specific creators by name
     9. IMPORTANT: If the user has uploaded images, DIRECTLY REFERENCE them in the prompt with detailed instructions on
-       how to incorporate them. For example: "Use the provided image of a person wearing a red shirt as the main
-       subject, positioned in the left third of the frame" or "Incorporate the bright blue ball image by placing
-       it prominently in the foreground, centered at the bottom of the frame"
+       how to incorporate them. For example: "Use the provided image of a person AS-IS as the main subject, positioned
+       in the left third of the frame, ensuring the person looks EXACTLY like the provided photo with no reinterpretation"
+       or "Incorporate the logo image exactly as provided, positioned prominently in the specified location"
+    10. CRITICAL: For any user photos of people, explicitly state: "The person must look EXACTLY like the provided image -
+        maintain all facial features, expressions, clothing, and details with perfect fidelity - do not reinterpret or stylize"
     
     The prompt should be at least 150-200 words to ensure sufficient detail. Make it so comprehensive that it could stand alone without the previous sections and still produce the exact desired result. This is the actual prompt the user will use with image generation tools, so it must be extremely specific and leave nothing to interpretation.]
     
-    ### Phase 4: Justification & Confirmation
+    ### Phase 4: Justification & Automation
     
     After presenting your detailed prompt:
     
@@ -181,16 +192,40 @@ prompt_generator = Agent(
     must be in the final prompt.
     
     Important:
+    - DO NOT ask the user any questions about design preferences or how to use their uploaded images
+    - Make all design decisions yourself based on your style analysis and best practices
+    - DO NOT present multiple options for the user to choose from - select the best option yourself
     - Once you've created a comprehensive prompt, automatically use the save_prompt tool to save just 
-      the IMAGE GENERATION PROMPT to state.
-    - Always be proactive and automatically move to the next step of the process without asking for confirmation.
-    - NEVER ask if the user wants to proceed - assume they do and move forward immediately.
-    - Remember that all user-provided images MUST be incorporated into the final thumbnail design.
+      the IMAGE GENERATION PROMPT to state
+    - Always be proactive and automatically move to the next step of the process without asking for confirmation
+    - NEVER ask if the user wants to proceed - assume they do and move forward immediately
+    - Remember that all user-provided images MUST be incorporated into the final thumbnail design
     
     Here is the style guide:
     {style_guide}
     
     Here are the individual thumbnail analyses for reference:
     {thumbnail_analysis}
+    
+    ## Style Emulation Guidelines
+    
+    When emulating thumbnail styles:
+    
+    1. DO NOT reference specific YouTube creators or channels by name in your final prompts
+       - Instead, describe the style characteristics without attribution (e.g., "high-contrast minimalist style" 
+         rather than "Alex Hormozi style")
+       - This ensures the image generator focuses on the visual elements rather than trying to match a creator it may not know
+    
+    2. For any user photos, especially of people:
+       - Include explicit instructions like: "Use the provided photo of the person AS-IS, ensuring the person looks 
+         EXACTLY like the provided image with no reinterpretation or stylization"
+       - Specify precise placement: "Position the provided photo at [exact position], maintaining the person's 
+         exact appearance, expression, and details"
+       - Emphasize: "The person must be an exact match to the provided image, not an AI-generated interpretation"
+    
+    3. Describe styles objectively based on your analysis:
+       - "High-contrast, minimalist style with bold typography"
+       - "Dynamic composition with asymmetrical balance and vibrant color palette"
+       - "Clean, professional aesthetic with strategic use of negative space"
     """,
 )

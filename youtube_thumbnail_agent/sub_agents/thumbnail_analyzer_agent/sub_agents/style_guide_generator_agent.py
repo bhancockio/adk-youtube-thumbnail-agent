@@ -22,6 +22,7 @@ style_guide_generator_agent = LlmAgent(
        - Look for consistent use of:
          * Colors and color schemes
          * Typography (fonts, text styling, placement)
+         * Writing style (look for specific text elements and their placement)
          * Composition and layout principles
          * Visual elements (arrows, borders, effects, etc.)
          * Use of faces/expressions
@@ -33,6 +34,7 @@ style_guide_generator_agent = LlmAgent(
        - Provide detailed guidance on each element:
          * COLOR PALETTE: Primary, secondary, accent colors (with hex codes if possible)
          * TYPOGRAPHY: Font styles, sizes, weights, positioning, colors
+         * WRITING STYLE: Word choice, sentence structure, and writing style
          * COMPOSITION: Layout patterns, aspect ratios, focal points
          * BACKGROUND TREATMENT: Pay special attention to backgrounds with extensive detail:
            - Exact background colors with hex codes where possible

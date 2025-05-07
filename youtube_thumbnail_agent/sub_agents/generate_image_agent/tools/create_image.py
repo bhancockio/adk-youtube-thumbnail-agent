@@ -5,7 +5,7 @@ Tool for creating images using OpenAI's image generation API with asset incorpor
 import base64
 import glob
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, Optional
 
 import google.genai.types as types
 from google.adk.tools.tool_context import ToolContext
@@ -83,16 +83,41 @@ def create_image(
                     # If we have a previous thumbnail AND other assets, we want to use both
 
                     if asset_files_paths:
-                        # We have both - use previous thumbnail as main and try to incorporate other assets
-                        with open(previous_thumbnail_path, "rb") as previous_thumbnail:
-                            # Generate using previous thumbnail as base
-                            response = client.images.edit(
-                                model="gpt-image-1",
-                                image=previous_thumbnail,  # Main image file
-                                prompt=clean_prompt,
-                                n=1,
-                                size=THUMBNAIL_IMAGE_SIZE,
-                            )
+                        # We have both - use previous thumbnail as main and incorporate other assets
+                        try:
+                            # Generate using previous thumbnail and all assets
+                            # Direct array literal works better with type checking
+                            asset_file_objects = [
+                                open(path, "rb") for path in asset_files_paths
+                            ]
+                            all_files = [
+                                open(previous_thumbnail_path, "rb")
+                            ] + asset_file_objects
+
+                            try:
+                                response = client.images.edit(
+                                    model="gpt-image-1",
+                                    # Use direct array literal which has the correct typing
+                                    image=[
+                                        open(previous_thumbnail_path, "rb"),
+                                        *[
+                                            open(path, "rb")
+                                            for path in asset_files_paths
+                                        ],
+                                    ],
+                                    prompt=clean_prompt,
+                                    n=1,
+                                    size=THUMBNAIL_IMAGE_SIZE,
+                                )
+                            finally:
+                                # Close all files
+                                for file in all_files:
+                                    file.close()
+                        except Exception as e:
+                            return {
+                                "status": "error",
+                                "message": f"Error generating image with previous thumbnail and assets: {str(e)}",
+                            }
                     else:
                         # We only have the previous thumbnail
                         with open(previous_thumbnail_path, "rb") as previous_thumbnail:
@@ -123,16 +148,25 @@ def create_image(
             if asset_files_paths:
                 # We have assets but no previous thumbnail (or couldn't use it)
                 try:
-                    # Use the first asset as the base image for editing
-                    with open(asset_files_paths[0], "rb") as asset_file:
-                        # Generate the image using edit endpoint with the asset
+                    # Open all asset files and pass them to the API
+                    asset_file_objects = [
+                        open(path, "rb") for path in asset_files_paths
+                    ]
+
+                    try:
+                        # Generate the image using edit endpoint with all assets
+                        # Use direct array literal to avoid typing issues
                         response = client.images.edit(
                             model="gpt-image-1",
-                            image=asset_file,  # Main image must be PNG
+                            image=[open(path, "rb") for path in asset_files_paths],
                             prompt=clean_prompt,
                             n=1,
                             size=THUMBNAIL_IMAGE_SIZE,
                         )
+                    finally:
+                        # Ensure all file handles are closed properly
+                        for file in asset_file_objects:
+                            file.close()
 
                 except Exception as e:
                     return {

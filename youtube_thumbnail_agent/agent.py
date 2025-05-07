@@ -3,7 +3,7 @@ from google.adk.agents import Agent
 from .constants import GEMINI_MODEL
 from .sub_agents.generate_image_agent.agent import generate_image_agent
 from .sub_agents.prompt_generator.agent import prompt_generator
-from .sub_agents.thumbnail_analyzer.agent import thumbnail_analyzer_agent
+from .sub_agents.thumbnail_analyzer_agent.agent import thumbnail_analyzer_agent
 from .sub_agents.thumbnail_scraper.agent import thumbnail_scraper_agent
 
 # Create the YouTube Thumbnail Generator Agent
@@ -47,7 +47,7 @@ thumbnail_agent = Agent(
     Delegate to: thumbnail_analyzer_agent
     This specialized agent will:
     - Analyze each downloaded thumbnail in extreme detail
-    - Identify consistent patterns, elements, colors, typography, and composition
+    - Identify consistent patterns, elements, colors, word choice, typography, and composition
     - Create a comprehensive style guide that captures the essence of the channel's thumbnail style
     - Present this analysis to the user for confirmation
     

@@ -60,6 +60,9 @@ def analyze_thumbnail(
                 filename=thumbnail_filename, artifact=image_artifact
             )
 
+            # Load the artifact
+            tool_context.load_artifact(filename=thumbnail_filename)
+
             # Store image path in state for reference
             tool_context.state["current_thumbnail"] = thumbnail_filename
             tool_context.state["current_thumbnail_version"] = artifact_version

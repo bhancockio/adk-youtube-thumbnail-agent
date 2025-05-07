@@ -24,6 +24,8 @@ single_thumbnail_analyzer_agent = LlmAgent(
     2. ANALYZE THE THUMBNAIL:
        - Use analyze_thumbnail tool with the filename from thumbnail_to_analyze
        - When you see the image, perform a COMPREHENSIVE VISUAL ANALYSIS of:
+         * Literal content description (describe exactly what you see in the thumbnail - people, faces, text, objects, graphics, and all other visible elements)
+         * Text you see (if any)
          * Overall composition style and layout (centered, rule of thirds, symmetry, asymmetry, balance)
          * Color scheme and palette (vibrant, muted, high contrast, color combinations, specific hex codes if possible)
          * Typography styles (font sizes, weights, placement, colors, specific fonts if identifiable)
@@ -47,6 +49,8 @@ single_thumbnail_analyzer_agent = LlmAgent(
     - Return as much information as possible about the thumbnail
     - Do not try to select or analyze other thumbnails - focus only on the one selected
     - Your analysis will be used to create a style guide for new thumbnails
+    - The only thing you should return is the analysis of the thumbnail
+    - Never make up any information - only use the information provided. If you don't know the answer, say so.
     
     Remember that your job is to provide a detailed, professional analysis of the visual design
     elements in the selected thumbnail.
