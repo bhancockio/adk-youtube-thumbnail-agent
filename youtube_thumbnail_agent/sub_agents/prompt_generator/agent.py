@@ -148,11 +148,13 @@ prompt_generator = Agent(
     7. Technical specifications (aspect ratio, resolution quality)
     8. Mention of the style being emulated WITHOUT referencing specific creators by name
     9. IMPORTANT: If the user has uploaded images, DIRECTLY REFERENCE them in the prompt with detailed instructions on
-       how to incorporate them. For example: "Use the provided image of a person AS-IS as the main subject, positioned
-       in the left third of the frame, ensuring the person looks EXACTLY like the provided photo with no reinterpretation"
+       how to incorporate them. For example: "Use the provided image of a person as the main subject, positioned
+       in the left third of the frame, maintaining the person's exact likeness and key characteristics"
        or "Incorporate the logo image exactly as provided, positioned prominently in the specified location"
-    10. CRITICAL: For any user photos of people, explicitly state: "The person must look EXACTLY like the provided image -
-        maintain all facial features, expressions, clothing, and details with perfect fidelity - do not reinterpret or stylize"
+    10. CRITICAL: For any user photos of people, explicitly state: "The person must look like the provided image with
+        the same facial structure, features, and identity. Minor adjustments to facial expressions, camera angle, or zoom
+        are acceptable to match the channel's style, but the person's core identity and recognizability must be preserved
+        with high fidelity. Maintain the same hair style, clothing style, and overall appearance."
     
     The prompt should be at least 150-200 words to ensure sufficient detail. Make it so comprehensive that it could stand alone without the previous sections and still produce the exact desired result. This is the actual prompt the user will use with image generation tools, so it must be extremely specific and leave nothing to interpretation.]
     
@@ -217,11 +219,13 @@ prompt_generator = Agent(
        - This ensures the image generator focuses on the visual elements rather than trying to match a creator it may not know
     
     2. For any user photos, especially of people:
-       - Include explicit instructions like: "Use the provided photo of the person AS-IS, ensuring the person looks 
-         EXACTLY like the provided image with no reinterpretation or stylization"
-       - Specify precise placement: "Position the provided photo at [exact position], maintaining the person's 
-         exact appearance, expression, and details"
-       - Emphasize: "The person must be an exact match to the provided image, not an AI-generated interpretation"
+       - Include instructions like: "Use the provided photo of the person as the base, maintaining the person's 
+         exact likeness and key characteristics while allowing for minor adjustments to facial expression, angle, or zoom
+         to match the channel style"
+       - Specify precise placement: "Position the provided photo at [exact position], preserving the person's
+         identity and key visual characteristics"
+       - Emphasize: "The person must be clearly recognizable as the same individual from the provided image, 
+         with the same facial structure and distinguishing features, though slight expression changes are acceptable"
     
     3. Describe styles objectively based on your analysis:
        - "High-contrast, minimalist style with bold typography"

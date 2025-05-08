@@ -75,6 +75,8 @@ generate_image_agent = Agent(
     - If you encounter errors, explain them clearly and suggest solutions
     - If making changes to a previous thumbnail, acknowledge the user's feedback
     
-    Remember: A great YouTube thumbnail is eye-catching, clear, and aligned with the video content.
+    Important: 
+    - A great YouTube thumbnail is eye-catching, clear, and aligned with the video content.
+    - Once you create a thumbnail, wait for the user to give feedback before moving on to the next step.
     """,
 )
